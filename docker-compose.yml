@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  load-balancing:
+    build:
+      context: /1-server-load-balancing
+      dockerfile: Dockerfile
+    image: joanaws/server-load-balancing:compose
+    container_name: load-balancing
+    ports:
+      - 80:80
+    depends_on:
+      - app
+      - app-rep-1
+      - app-backup
+
+  app:
+    build:
+      context: /2-app
+      dockerfile: Dockerfile
+    image: joanaws/app:compose
+    container_name: app
+  
+  app-rep-1:
+    depends_on:
+      - app
+    image: joanaws/app:compose
+    container_name: app-rep-1
+
+  app-backup:
+    depends_on:
+      - app
+    image: joanaws/app:compose
+    container_name: app-backup
+
